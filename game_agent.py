@@ -124,21 +124,11 @@ class CustomPlayer:
         # move from the game board (i.e., an opening book), or returning
         # immediately if there are no legal moves
 
-        if self.iterative:
-            for itr in range(self.search_depth):
-                if self.method == "alpha beta":
-                    best_move = self.alphabeta(game,itr)[1]
-                else:
-                    best_move = self.minimax(game, itr)[1]
-            return best_move
-        else:
-            if self.method == "alpha beta":
-                best_move = self.alphabeta(game, itr)[1]
-            return best_move
+        if not legal_moves:
+            return (-1, -1)
 
-        else:
-            best_move = self.minimax(game, itr)[1]
-        return best_move
+        m = (-1, -1)
+        
 
 
 
@@ -149,11 +139,30 @@ class CustomPlayer:
             # here in order to avoid timeout. The try/except block will
             # automatically catch the exception raised by the search method
             # when the timer gets close to expiring
-            pass
+            #pass
+            if self.iterative:
+                depth = 1
+                while True:
+                    if self.method == 'minimax':
+                        v, m = self.minimax(game, depth)
+                    if self.method == 'alphabeta':
+                        v, m = self.alphabeta(game, depth)
+
+                    if v == float('inf'):
+                        break
+                    else:
+                        depth +=1
+            else:
+                if self.method == 'minimax':
+                    _, m = self.minimax(game, self.search_depth)
+                if self.method == 'alphabeta':
+                    _, m = self.alphabeta(game, self.search_depth)
+
+            return m
 
         except Timeout:
             # Handle any actions required at timeout, if necessary
-            pass
+            return m
 
         # Return the best move from the last completed search iteration
         raise NotImplementedError
@@ -273,4 +282,44 @@ class CustomPlayer:
             raise Timeout()
 
         # TODO: finish this function!
+
+        #the top part is the minimax part
+        if game.is_winner(self):
+            return self.score(game, self), game.get_player_location(self)
+
+        if game.is_loser(self):
+            return self.score(game, self), (-1,-1)
+
+        legal_moves = game.get_legal_moves
+
+        
+        if depth == 0:
+            return self.score(game, self), game.get_player_location(self)
+
+        if not legal_moves:
+            return self.score(game, self), (-1, -1)
+
+        if maximizing_player:
+            best_value = float("-inf")
+            best_move = (-1, -1)
+            for node in legal_moves:
+                new_game = game.forecast_move(node)
+                value, position = self.minimax(new_game, depth - 1, False)
+                if value > best_value:
+                    best_value = value
+                    best_move = node
+            return best_value, best_move
+        else:
+            best_value = float("inf")
+            best_move = (-1, -1)
+            for node in legal_moves:
+                new_game = game.forecast_move(node)
+                value, position = self.minimax(new_game, depth - 1, True)
+                if value < best_value:
+                    best_value = value
+                    best_move = node
+            return best_value, best_move    
+
+            #down here you need to figure out how to do the alpha beta pruning
+
         raise NotImplementedError
