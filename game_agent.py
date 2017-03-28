@@ -284,7 +284,12 @@ class CustomPlayer:
         # TODO: finish this function!
         def max_value(game, depth, alpha, beta):
             if depth==1 or game.is_loser(self) or game.is_winner(self):
-                return self.score(game, self)
+                best_score = self.score(game, self)
+                if best_score >= beta:
+                    return best_score
+                alpha = max(alpha, best_score)
+                return best_score
+                
             moves = game.get_legal_moves()
             bestScore = float("-inf")
             for move in moves:
@@ -297,7 +302,13 @@ class CustomPlayer:
 
         def min_value(game, depth, alpha, beta):
             if depth==1 or game.is_loser(self) or game.is_winner(self):
-                return self.score(game, self)
+                best_score = self.score(game, self)
+                if best_score >= beta:
+                    return best_score
+                alpha = max(alpha, best_score)
+
+                return best_score
+
             moves = game.get_legal_moves()
             bestScore = float("-inf")
             for move in moves:
@@ -308,7 +319,7 @@ class CustomPlayer:
                 alpha = max(alpha, bestScore)
             return bestScore
 
-        begin_move = game.get_legal_moves()
+        #begin_move = game.get_legal_moves()
 
 
 
