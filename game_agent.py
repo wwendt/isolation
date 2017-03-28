@@ -282,8 +282,38 @@ class CustomPlayer:
             raise Timeout()
 
         # TODO: finish this function!
+        def max_value(game, depth, alpha, beta):
+            if depth==1 or game.is_loser(self) or game.is_winner(self):
+                return self.score(game, self)
+            moves = game.get_legal_moves()
+            bestScore = float("-inf")
+            for move in moves:
+                child = game.forecast_move(move)
+                bestScore = max(bestScore, min_vaue(child, depth-1, alpha, beta))
+                if bestScore >= beta:
+                    return bestScore
+                alpha = max(alpha, bestScore)
+            return bestScore
+
+        def min_value(game, depth, alpha, beta):
+            if depth==1 or game.is_loser(self) or game.is_winner(self):
+                return self.score(game, self)
+            moves = game.get_legal_moves()
+            bestScore = float("-inf")
+            for move in moves:
+                child = game.forecast_move(move)
+                bestScore = min(bestScore, max_value(chil, depth-1, alpha, beta))
+                if bestScore >= beta:
+                    return bestScore
+                alpha = max(alpha, bestScore)
+            return bestScore
+
+        begin_move = game.get_legal_moves()
+        
+
 
         #the top part is the minimax part
+        """
         if game.is_winner(self):
             return self.score(game, self), game.get_player_location(self)
 
@@ -318,7 +348,8 @@ class CustomPlayer:
                 if value < best_value:
                     best_value = value
                     best_move = node
-            return best_value, best_move    
+            return best_value, best_move  
+            """  
 
             #down here you need to figure out how to do the alpha beta pruning
 
