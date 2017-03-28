@@ -302,14 +302,14 @@ class CustomPlayer:
             bestScore = float("-inf")
             for move in moves:
                 child = game.forecast_move(move)
-                bestScore = min(bestScore, max_value(chil, depth-1, alpha, beta))
+                bestScore = min(bestScore, max_value(child, depth-1, alpha, beta))
                 if bestScore >= beta:
                     return bestScore
                 alpha = max(alpha, bestScore)
             return bestScore
 
         begin_move = game.get_legal_moves()
-        
+
 
 
         #the top part is the minimax part
