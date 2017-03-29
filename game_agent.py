@@ -282,6 +282,11 @@ class CustomPlayer:
             raise Timeout()
 
         # TODO: finish this function!
+        legal_moves = game.get_legal_moves()
+
+        if not legal_moves:
+            return self.score(game, self), (-1,-1)
+
         def max_value(game, depth, alpha, beta):
             if depth==1 or game.is_loser(self) or game.is_winner(self):
                 best_score = self.score(game, self)
@@ -316,12 +321,12 @@ class CustomPlayer:
                 bestScore = min(bestScore, max_value(child, depth-1, alpha, beta))
                 if bestScore >= beta:
                     return bestScore
-                alpha = max(alpha, bestScore)
+                beta = max(beta, bestScore)
             return bestScore
 
         #begin_move = game.get_legal_moves()
 
-
+        max_value(game, depth-1, alpha, beta)
 
         #the top part is the minimax part
         """
@@ -364,4 +369,4 @@ class CustomPlayer:
 
             #down here you need to figure out how to do the alpha beta pruning
 
-        raise NotImplementedError
+       # raise NotImplementedError
