@@ -287,6 +287,41 @@ class CustomPlayer:
         if not legal_moves:
             return self.score(game, self), (-1,-1)
 
+        if game.is_winner(self):
+            return self.score(game, self), game.get_player_location(self)
+
+        if game.is_loser(self):
+            return self.score(game, self), (-1, -1)
+
+        legal_moves = game.get_legal_moves()
+
+        if depth == 0:
+            return self.score(game, self), game.get_player_location(self)
+
+        if not legal_moves:
+            return self.score(game, self), (-1, -1)
+
+        if maximizing_player:
+            best_score = float("-inf")
+            moves = game.get_legal_moves()
+            for move in moves:
+                child = game.forecast_move(move)
+                best_score = max(best_score, self.alphabeta(child, depth-1, alpha, beta, False))
+                alpha = max(alpha, best_score)
+                if beta <= alpha:
+                    break
+            return best_score
+        else:
+            best_score = float("-inf")
+            moves = game.get_legal_moves()
+            for move in moves: 
+                child = game.forecast_move(move)
+                best_score = min(best_score, self.alphabeta(child, depth-1, alpha, beta, True))
+                beta = min(beta, best_score)
+                if beta <= alpha:
+                    break
+            return best_score
+        """
         def max_value(game, depth, alpha, beta):
             if depth==1 or game.is_loser(self) or game.is_winner(self):
                 best_score = self.score(game, self)
@@ -299,8 +334,10 @@ class CustomPlayer:
             bestScore = float("-inf")
             for move in moves:
                 child = game.forecast_move(move)
-                bestScore = max(bestScore, min_vaue(child, depth-1, alpha, beta))
-                if bestScore >= beta:
+                bestScore = min(bestScore, max_value(child, depth-1, alpha, beta))
+                if depth ==1:
+                    break
+                elif bestScore >= beta:
                     return bestScore
                 alpha = max(alpha, bestScore)
             return bestScore
@@ -318,15 +355,17 @@ class CustomPlayer:
             bestScore = float("-inf")
             for move in moves:
                 child = game.forecast_move(move)
-                bestScore = min(bestScore, max_value(child, depth-1, alpha, beta))
-                if bestScore >= beta:
+                bestScore = max(bestScore, min_value(child, depth-1, alpha, beta))
+                if depth ==1:
+                    break
+                elif bestScore >= beta:
                     return bestScore
                 beta = max(beta, bestScore)
             return bestScore
-
+        """
         #begin_move = game.get_legal_moves()
 
-        max_value(game, depth-1, alpha, beta)
+       # max_value(game, depth-1, alpha, beta)
 
         #the top part is the minimax part
         """
