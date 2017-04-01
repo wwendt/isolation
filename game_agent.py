@@ -306,21 +306,23 @@ class CustomPlayer:
             moves = game.get_legal_moves()
             for move in moves:
                 child = game.forecast_move(move)
-                best_score = max(best_score, self.alphabeta(child, depth-1, alpha, beta, False))
+                best_score, child_move = self.alphabeta(child, depth-1, alpha, beta, False)
                 alpha = max(alpha, best_score)
                 if beta <= alpha:
                     break
-            return best_score
+            return best_score, move
         else:
             best_score = float("-inf")
             moves = game.get_legal_moves()
             for move in moves: 
                 child = game.forecast_move(move)
-                best_score = min(best_score, self.alphabeta(child, depth-1, alpha, beta, True))
+                best_score, child_move = self.alphabeta(child, depth-1, alpha, beta, True)
                 beta = min(beta, best_score)
                 if beta <= alpha:
                     break
-            return best_score
+            return best_score, move
+
+        
         """
         def max_value(game, depth, alpha, beta):
             if depth==1 or game.is_loser(self) or game.is_winner(self):
