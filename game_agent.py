@@ -303,24 +303,37 @@ class CustomPlayer:
 
         if maximizing_player:
             best_score = float("-inf")
+            best_move = None
             moves = game.get_legal_moves()
             for move in moves:
                 child = game.forecast_move(move)
-                best_score, child_move = self.alphabeta(child, depth-1, alpha, beta, False)
+                child_score, child_move = self.alphabeta(child, depth-1, alpha, beta, False)
+                if child_score > best_score:
+                    best_score = child_score
+                    best_move = move
                 alpha = max(alpha, best_score)
                 if beta <= alpha:
                     break
-            return best_score, move
+                print(best_score) 
+                print('move', move)
+            print(best_score)
+            return best_score, best_move
         else:
-            best_score = float("-inf")
+            best_score = float("inf")
+            best_move = None
             moves = game.get_legal_moves()
             for move in moves: 
                 child = game.forecast_move(move)
-                best_score, child_move = self.alphabeta(child, depth-1, alpha, beta, True)
+                child_score, child_move = self.alphabeta(child, depth-1, alpha, beta, True)
+                if child_score > best_score:
+                    best_score = child_score
+                    best_move = move
                 beta = min(beta, best_score)
                 if beta <= alpha:
                     break
-            return best_score, move
+                print('best', best_score) 
+                print('best', move) 
+            return best_score, best_move
 
         
         """
