@@ -38,7 +38,17 @@ def custom_score(game, player):
     """
 
     # TODO: finish this function!
-    raise NotImplementedError
+    #raise NotImplementedError
+    
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    own_moves = len(game.get_legal_moves(player))
+    opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    return float(own_moves - opp_moves)
 
 
 class CustomPlayer:
@@ -314,9 +324,9 @@ class CustomPlayer:
                 alpha = max(alpha, best_score)
                 if beta <= alpha:
                     break
-                print(best_score) 
-                print('move', move)
-            print(best_score)
+                print("max best score", best_score) 
+                print('move', best_move)
+                print(best_score)
             return best_score, best_move
         else:
             best_score = float("inf")
@@ -325,14 +335,14 @@ class CustomPlayer:
             for move in moves: 
                 child = game.forecast_move(move)
                 child_score, child_move = self.alphabeta(child, depth-1, alpha, beta, True)
-                if child_score > best_score:
+                if child_score < best_score:
                     best_score = child_score
                     best_move = move
                 beta = min(beta, best_score)
                 if beta <= alpha:
                     break
-                print('best', best_score) 
-                print('best', move) 
+                print('best score else', best_score) 
+                print('best move bottom', move) 
             return best_score, best_move
 
         
